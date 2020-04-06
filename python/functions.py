@@ -166,6 +166,7 @@ def generatedocpage(modelInfoFile):
 
 
 def generatemdfile(attributesLocation, dbtProjectLocation):
+    # this works only if your code is based on a HTML page
     filesInLocation = os.listdir(attributesLocation)
     columnLongNameDict = {}
     columnSnakeNameDict = {}
@@ -224,20 +225,13 @@ def generatemdfile(attributesLocation, dbtProjectLocation):
         outputmdFile.write('\n')
 
         # csvwriter.writerow([columnLongNameDict[key], key, columnSnakeNameDict[key], columnNameDefDict[key]])
-    outputmdFile.write('{% docs record_captured_at %}\n')
-    outputmdFile.write('UTC time at which the record was captured in the database.\n')
-    outputmdFile.write('{% enddocs %}\n')
-    outputmdFile.write('\n')
 
-    outputmdFile.write('{% docs blob_file_name %}\n')
-    outputmdFile.write('File name of the message recorded in the blob storage.\n')
-    outputmdFile.write('{% enddocs %}\n')
-    outputmdFile.write('\n')
 
     outputmdFile.close()
 
 
 def generateTablemdfile(attribpath, dbtproj):
+    # this works only if your code is based on a HTML page
     filesInLocation = os.listdir(attribpath)
     tableDict = {}
     for eachfile in filesInLocation:
@@ -273,38 +267,13 @@ def generateTablemdfile(attribpath, dbtproj):
                 if tableDescHeader[0].find('Definition') > -1:
                     tableDict[tableName] = description
 
-    outputmdFile = open(dbtproj + '\\models\\tables_pnr.md', 'w')
+    outputmdFile = open(dbtproj + '\\models\\tables.md', 'w')
     for key in tableDict:
-        outputmdFile.write('{% docs stg_sabre_pnr__' + convertToSnakecase(key) + ' %}\n')
+        outputmdFile.write('{% docs ' + convertToSnakecase(key) + ' %}\n')
         outputmdFile.write(
-            tableDict[key].replace('date_time', 'datetime') + ' This view is created on top of JSON raw message. \n')
+            tableDict[key].replace('date_time', 'datetime') + '\n')
         outputmdFile.write('{% enddocs %}\n')
         outputmdFile.write('\n')
 
-        outputmdFile.write('{% docs star_pnr_rt__' + convertToSnakecase(key) + '_curr %}\n')
-        outputmdFile.write(tableDict[key].replace('date_time', 'datetime') + ' This table contains the latest state.\n')
-        outputmdFile.write('{% enddocs %}\n')
-        outputmdFile.write('\n')
-
-        outputmdFile.write('{% docs star_pnr_rt__' + convertToSnakecase(key) + '_hist %}\n')
-        outputmdFile.write(tableDict[key].replace('date_time', 'datetime') + ' This table contains all the states.\n')
-        outputmdFile.write('{% enddocs %}\n')
-        outputmdFile.write('\n')
-
-        outputmdFile.write('{% docs ' + key + ' %}\n')
-        outputmdFile.write(tableDict[
-                               key] + ' This is a view created on top of the current table with the latest state and is used for reporting.\n')
-        outputmdFile.write('{% enddocs %}\n')
-        outputmdFile.write('\n')
-
-    outputmdFile.write('{% docs record_captured_at %}\n')
-    outputmdFile.write('UTC time at which the record was captured in the database.\n')
-    outputmdFile.write('{% enddocs %}\n')
-    outputmdFile.write('\n')
-
-    outputmdFile.write('{% docs blob_file_name %}\n')
-    outputmdFile.write('File name of the message recorded in the blob storage.\n')
-    outputmdFile.write('{% enddocs %}\n')
-    outputmdFile.write('\n')
 
     outputmdFile.close()
